@@ -74,11 +74,6 @@ namespace ChangeName
             if (args.Player != null)
             {
                 var plr = args.Player;
-                if (!(!args.Player.Group.HasPermission("noselfname") || args.Player.Group.HasPermission("adminselfname")))
-                {
-                    plr.SendErrorMessage("You do not have access to that command.");
-                    return;
-                }
                 if (args.Parameters.Count < 1)
                 {
                     args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /selfname [newname]");
