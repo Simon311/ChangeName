@@ -13,7 +13,7 @@ namespace ChangeName
     {
         public override Version Version
         {
-            get { return new Version("1.0.0.1"); }
+            get { return new Version("1.0.0.2"); }
         }
         public override string Name
         {
@@ -31,7 +31,7 @@ namespace ChangeName
         public ChangeName(Main game)
             : base(game)
         {
-            Order = -2;
+            Order = -50;
         }
         public override void Initialize()
         {
@@ -157,15 +157,20 @@ namespace ChangeName
         }
         private void Broadcast(int ply, string msg, byte red, byte green, byte blue)
         {
-            foreach (TSPlayer pla in TShock.Players)
+            TSPlayer[] Players = new TSPlayer[TShock.Config.MaxSlots + 30];
+            Array.Copy(TShock.Players, 0, Players, 0, TShock.Config.MaxSlots + 30);
+            foreach (TSPlayer pla in Players)
             {
-                if (pla == TShock.Players[ply])
+                if (pla != null)
                 {
-                    pla.SendMessage(string.Format("<{0}> {1}", TShock.Players[ply].Name, msg), red, green, blue);
-                }
-                else
-                {
-                    pla.SendMessageFromPlayer(msg, red, green, blue, ply);
+                    if (pla == TShock.Players[ply])
+                    {
+                        pla.SendMessage(string.Format("<{0}> {1}", TShock.Players[ply].Name, msg), red, green, blue);
+                    }
+                    else
+                    {
+                        pla.SendMessageFromPlayer(msg, red, green, blue, ply);
+                    }
                 }
             }
             TSPlayer.Server.SendMessage(TShock.Players[ply].Name + ": " + msg, red, green, blue);
