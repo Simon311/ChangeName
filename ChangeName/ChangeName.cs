@@ -13,7 +13,7 @@ namespace ChangeName
     {
         public override Version Version
         {
-            get { return new Version("1.0.0.2"); }
+            get { return new Version("1.0.0.3"); }
         }
         public override string Name
         {
@@ -121,22 +121,12 @@ namespace ChangeName
                     args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /selfname [newname]");
                     return;
                 }
-                string newName = args.Parameters[0];
-                bool hidden;
-                if (args.Parameters.Count < 2) { hidden = false; } else { hidden = true; }
+                string newName = String.Join(" ", args.Parameters);
                 string oldName = plr.TPlayer.name;
                 plr.TPlayer.name = newName;
                 oldNames[newName] = oldName;
-                if (!hidden)
-                {
-                    TShock.Utils.Broadcast(string.Format("{0} has changed his name to {1}.", oldName, newName), Color.DeepPink);
-                    if (TShock.Config.EnableChatAboveHeads) { args.Player.SendMessage("It will take a while before new name appears", Color.DeepPink); }
-                }
-                else
-                {
-                    args.Player.SendMessage(string.Format("You have secretly changed your name to {0}.", newName), Color.DeepPink);
-                    if (TShock.Config.EnableChatAboveHeads) { args.Player.SendMessage("It will take a while before new name appears", Color.DeepPink); }
-                }
+                TShock.Utils.Broadcast(string.Format("{0} has changed his name to {1}.", oldName, newName), Color.DeepPink);
+                if (TShock.Config.EnableChatAboveHeads) { args.Player.SendMessage("It will take a while before changes apply", Color.DeepPink); }
             }
         }
         private void OldName(CommandArgs args)
