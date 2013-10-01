@@ -1,19 +1,19 @@
 ﻿using System;
 using TShockAPI;
 using Terraria;
+using TerrariaApi.Server;
 using System.Collections.Generic;
-using Hooks;
 using System.ComponentModel;
 
 namespace ChangeName
 {
-    [APIVersion(1, 12)]
+    [ApiVersion(1, 14)]
 
     public class ChangeName : TerrariaPlugin
     {
         public override Version Version
         {
-            get { return new Version("1.0.0.3"); }
+            get { return new Version("1.2"); }
         }
         public override string Name
         {
@@ -31,7 +31,7 @@ namespace ChangeName
         public ChangeName(Main game)
             : base(game)
         {
-            Order = -50;
+            Order = 4;
         }
         public override void Initialize()
         {
@@ -39,35 +39,35 @@ namespace ChangeName
             Commands.ChatCommands.Add(new Command("oldnames", OldName, "oldname"));
             Commands.ChatCommands.Add(new Command("selfname", SelfName, "selfname"));
             Commands.ChatCommands.Add(new Command("", Chat, "chat"));
-            ServerHooks.Chat += OnChat;
+            ServerApi.Hooks.ServerChat.Register(this, OnChat);
             // TShock.Config.EnableChatAboveHeads = false;
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                Hooks.ServerHooks.Chat -= OnChat;
+                ServerApi.Hooks.ServerChat.Deregister(this, OnChat);
             }
             base.Dispose(disposing);
         }
-        private void OnChat(messageBuffer msg, int ply, string text, HandledEventArgs e)
+        private void OnChat(ServerChatEventArgs e)
         {
             if (e.Handled)
                 return;
-
+            var msg = e.Buffer;
             var tsplr = TShock.Players[msg.whoAmI];
             if (tsplr == null)
             {
                 e.Handled = true;
                 return;
             }
-            if (text.StartsWith("/"))
+            if (e.Text.StartsWith("/"))
             {
                 return;
             }
             else if (!tsplr.mute && TShock.Config.EnableChatAboveHeads)
             {
-                Broadcast(ply, String.Format(TShock.Config.ChatAboveHeadsFormat, tsplr.Group.Name, tsplr.Group.Prefix, tsplr.Name, tsplr.Group.Suffix, text), tsplr.Group.R, tsplr.Group.G, tsplr.Group.B);
+                Broadcast(e.Who, String.Format(TShock.Config.ChatAboveHeadsFormat, tsplr.Group.Name, tsplr.Group.Prefix, tsplr.Name, tsplr.Group.Suffix, e.Text), tsplr.Group.R, tsplr.Group.G, tsplr.Group.B);
 
                 e.Handled = true;
             }
