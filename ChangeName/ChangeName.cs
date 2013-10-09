@@ -13,7 +13,7 @@ namespace ChangeName
     {
         public override Version Version
         {
-            get { return new Version("1.2"); }
+            get { return new Version("1.2.1"); }
         }
         public override string Name
         {
@@ -38,9 +38,8 @@ namespace ChangeName
             Commands.ChatCommands.Add(new Command("changenames", ChanName, "chname"));
             Commands.ChatCommands.Add(new Command("oldnames", OldName, "oldname"));
             Commands.ChatCommands.Add(new Command("selfname", SelfName, "selfname"));
-            Commands.ChatCommands.Add(new Command("", Chat, "chat"));
+            Commands.ChatCommands.Add(new Command("tshock.canchat", Chat, "chat"));
             ServerApi.Hooks.ServerChat.Register(this, OnChat);
-            // TShock.Config.EnableChatAboveHeads = false;
         }
         protected override void Dispose(bool disposing)
         {
