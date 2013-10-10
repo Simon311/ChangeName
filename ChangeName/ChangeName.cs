@@ -13,7 +13,7 @@ namespace ChangeName
     {
         public override Version Version
         {
-            get { return new Version("1.2.1"); }
+            get { return new Version("1.2.2"); }
         }
         public override string Name
         {
@@ -31,7 +31,7 @@ namespace ChangeName
         public ChangeName(Main game)
             : base(game)
         {
-            Order = 4;
+            Order = -1;
         }
         public override void Initialize()
         {
@@ -39,37 +39,6 @@ namespace ChangeName
             Commands.ChatCommands.Add(new Command("oldnames", OldName, "oldname"));
             Commands.ChatCommands.Add(new Command("selfname", SelfName, "selfname"));
             Commands.ChatCommands.Add(new Command("tshock.canchat", Chat, "chat"));
-            ServerApi.Hooks.ServerChat.Register(this, OnChat);
-        }
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ServerApi.Hooks.ServerChat.Deregister(this, OnChat);
-            }
-            base.Dispose(disposing);
-        }
-        private void OnChat(ServerChatEventArgs e)
-        {
-            if (e.Handled)
-                return;
-            var msg = e.Buffer;
-            var tsplr = TShock.Players[msg.whoAmI];
-            if (tsplr == null)
-            {
-                e.Handled = true;
-                return;
-            }
-            if (e.Text.StartsWith("/"))
-            {
-                return;
-            }
-            else if (!tsplr.mute && TShock.Config.EnableChatAboveHeads)
-            {
-                Broadcast(e.Who, String.Format(TShock.Config.ChatAboveHeadsFormat, tsplr.Group.Name, tsplr.Group.Prefix, tsplr.Name, tsplr.Group.Suffix, e.Text), tsplr.Group.R, tsplr.Group.G, tsplr.Group.B);
-
-                e.Handled = true;
-            }
         }
         private void ChanName(CommandArgs args)
         {
@@ -143,27 +112,6 @@ namespace ChangeName
                     args.Player.SendMessage(string.Format("{0}'s name has not been changed.", args.Parameters[0]), Color.DeepPink);
                 }
             }
-        }
-        private void Broadcast(int ply, string msg, byte red, byte green, byte blue)
-        {
-            TSPlayer[] Players = new TSPlayer[TShock.Config.MaxSlots + 30];
-            Array.Copy(TShock.Players, 0, Players, 0, TShock.Config.MaxSlots + 30);
-            foreach (TSPlayer pla in Players)
-            {
-                if (pla != null)
-                {
-                    if (pla == TShock.Players[ply])
-                    {
-                        pla.SendMessage(string.Format("<{0}> {1}", TShock.Players[ply].Name, msg), red, green, blue);
-                    }
-                    else
-                    {
-                        pla.SendMessageFromPlayer(msg, red, green, blue, ply);
-                    }
-                }
-            }
-            TSPlayer.Server.SendMessage(TShock.Players[ply].Name + ": " + msg, red, green, blue);
-            Log.Info(string.Format("Broadcast: {0}", TShock.Players[ply].Name + ": " + msg));
         }
         private void Chat(CommandArgs args)
         {
