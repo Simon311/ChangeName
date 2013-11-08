@@ -68,7 +68,7 @@ namespace ChangeName
                 }
 
                 string newName = args.Parameters[1];
-				bool hidden = args.Parameters.Count < 3;
+				bool hidden = args.Parameters.Count > 2;
 
                 var plr = foundplr[0];
                 string oldName = plr.TPlayer.name;
