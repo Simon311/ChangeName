@@ -91,12 +91,12 @@ namespace ChangeName
                     args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /selfname [newname]");
                     return;
                 }
-                string newName = String.Join(" ", args.Parameters);
+				string newName = String.Join(" ", args.Parameters).Trim();
 
-				// Checks:
-				if (newName.Trim().Length < 3)
+				#region Checks
+				if (newName.Length < 2)
 				{
-					args.Player.SendMessage("A name must be at least 3 characters long.", Color.DeepPink);
+					args.Player.SendMessage("A name must be at least 2 characters long.", Color.DeepPink);
 					return;
 				}
 
@@ -106,7 +106,9 @@ namespace ChangeName
 					args.Player.SendMessage("This name is taken by another player.", Color.DeepPink);
 					return;
 				}
-                string oldName = plr.TPlayer.name;
+				#endregion Checks
+
+				string oldName = plr.TPlayer.name;
                 plr.TPlayer.name = newName;
 				NetMessage.SendData((int)PacketTypes.PlayerInfo, -1, -1, plr.TPlayer.name, args.Player.Index, 0, 0, 0, 0);
                 oldNames[newName] = oldName;
