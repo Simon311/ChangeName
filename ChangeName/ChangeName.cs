@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TShockAPI;
 using Terraria;
 using TerrariaApi.Server;
@@ -91,6 +92,20 @@ namespace ChangeName
                     return;
                 }
                 string newName = String.Join(" ", args.Parameters);
+
+				// Checks:
+				if (newName.Trim().Length < 3)
+				{
+					args.Player.SendMessage("A name must be at least 3 characters long.", Color.DeepPink);
+					return;
+				}
+
+				List<TSPlayer> SameName = TShock.Players.Where(player => (player != null && player.Name == newName)).ToList();
+				if (SameName.Count > 0)
+				{
+					args.Player.SendMessage("This name is taken by another player.", Color.DeepPink);
+					return;
+				}
                 string oldName = plr.TPlayer.name;
                 plr.TPlayer.name = newName;
 				NetMessage.SendData((int)PacketTypes.PlayerInfo, -1, -1, plr.TPlayer.name, args.Player.Index, 0, 0, 0, 0);
