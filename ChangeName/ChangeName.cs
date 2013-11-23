@@ -100,6 +100,12 @@ namespace ChangeName
 					return;
 				}
 
+				if (newName.Length > 20)
+				{
+					args.Player.SendMessage("A name must not be longer than 20 characters.", Color.DeepPink);
+					return;
+				}
+
 				List<TSPlayer> SameName = TShock.Players.Where(player => (player != null && player.Name == newName)).ToList();
 				if (SameName.Count > 0)
 				{
