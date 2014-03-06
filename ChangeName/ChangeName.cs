@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace ChangeName
 {
-    [ApiVersion(1, 14)]
+    [ApiVersion(1, 15)]
 
     public class ChangeName : TerrariaPlugin
     {
